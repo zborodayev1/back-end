@@ -5,7 +5,7 @@ import {
   registerValidation,
   loginValidation,
   postCreateValidation,
-} from "./server/validations/validations.js";
+} from "./server/validations.js";
 import { checkAuth, handleValidationsErrors } from "./server/utils/index.js";
 import { UserController, PostController } from "./server/controllers/index.js";
 
@@ -35,7 +35,7 @@ const upload = multer({ storage });
 
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));
- 
+
 app.post(
   "/auth/login",
   loginValidation,
