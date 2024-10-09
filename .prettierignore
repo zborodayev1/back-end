@@ -1,0 +1,11 @@
+# Ignore artifacts:
+build
+coverage
+package.json
+package-lock.json
+vite.config.js
+eslint.config.js
+.gitignore
+.gitattributes
+node_modules
+README.md 
