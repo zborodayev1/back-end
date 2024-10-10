@@ -1,11 +1,12 @@
-/* eslint-disable no-unused-vars */
+ 
 import PostModel from "../models/post.js";
 
-export const getAll = async (res, req) => {
+
+export const getAll = async (req, res) => {
   try {
     const posts = await PostModel.find().populate("user").exec();
 
-    res.json(posts);
+    res.json({ posts });
   } catch (err) {
     console.log(err);
     res.status(500).json({
@@ -14,44 +15,38 @@ export const getAll = async (res, req) => {
   }
 };
 
-export const getOne = async (res, req) => {
-  try {
-    const postId = req.params.id;
+export const getOne = (req, res) => {
+  const postId = req.params.id;
 
-    PostModel.findOneAndUpdate(
-      {
-        _id: postId,
-      },
-      {
-        $inc: { viewsCount: 1 },
-      },
-      {
-        returnDocument: "after",
-      },
-      (err, doc) => {
-        if (err) {
-          console.log(err);
-          return res.status(500).json({
-            message: "Не удалось вернуть статью",
-          });
-        }
-        if (!doc) {
-          return res.status(404).json({
-            message: "Статья не найдена",
-          });
-        }
-        res.json(doc);
-      },
-    );
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({
-      message: "Не удалось получить статьи",
+  PostModel.findOneAndUpdate(
+    {
+      _id: postId,
+    },
+    {
+      $inc: { viewsCount: 1 },
+    },
+    {
+      returnDocument: "after",
+    }
+  )
+    .then((doc) => {
+      if (!doc) {
+        return res.status(404).json({
+          message: "Статья не найдена",
+        });
+      }
+
+      res.json({ doc });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({
+        message: "Не удалось вернуть статью",
+      });
     });
-  }
 };
 
-export const remove = async (res, req) => {
+export const remove = async (req, res) => {
   try {
     const postId = req.params.id;
 
@@ -97,15 +92,15 @@ export const create = async (req, res) => {
 
     const post = await doc.save();
 
-    res.json(post);
+    return res.json({ post });
+
   } catch (err) {
     console.log(err);
-    res.status(500).json({
+    return res.status(500).json({
       message: "Не удалось создать статью",
     });
   }
 };
-
 export const update = async (req, res) => {
   try {
     const postId = req.params.id;

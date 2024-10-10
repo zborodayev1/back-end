@@ -1,12 +1,13 @@
 import multer from "multer";
 import express from "express";
 import mongoose from "mongoose";
+import cors from "cors";
 import {
   registerValidation,
   loginValidation,
   postCreateValidation,
 } from "./server/validations.js";
-import { checkAuth, handleValidationsErrors } from "./server/utils/index.js";
+import {checkAuth, handleValidationsErrors } from "./server/utils/index.js"; 
 import { UserController, PostController } from "./server/controllers/index.js";
 
 mongoose
@@ -34,6 +35,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 app.use(express.json());
+app.use(cors());
 app.use("/uploads", express.static("uploads"));
 
 app.post(
@@ -48,7 +50,7 @@ app.post(
   handleValidationsErrors,
   UserController.register,
 );
-app.get("/auth/me", checkAuth, UserController.getMe);
+app.get("/me", checkAuth, UserController.getMe);
 
 app.post("/upload", checkAuth, upload.single("image"), (req, res) => {
   res.json({
