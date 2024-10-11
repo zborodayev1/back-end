@@ -1,4 +1,3 @@
- 
 import PostModel from "../models/post.js";
 
 
@@ -14,7 +13,6 @@ export const getAll = async (req, res) => {
     });
   }
 };
-
 export const getOne = (req, res) => {
   const postId = req.params.id;
 
@@ -45,7 +43,6 @@ export const getOne = (req, res) => {
       });
     });
 };
-
 export const remove = (req, res) => {
   const postId = req.params.id;
 
@@ -70,10 +67,18 @@ export const remove = (req, res) => {
       });
     });
 };
-
 export const create = async (req, res) => {
   try {
+    const postId = req.params.id;
+
+    if (!postId) {
+      return res.status(400).json({
+        message: "Не передан ID статьи",
+      });
+    }
+
     const doc = new PostModel({
+      _id: postId,
       title: req.body.title,
       text: req.body.text,
       imageUrl: req.body.imageUrl,
@@ -81,7 +86,19 @@ export const create = async (req, res) => {
       user: req.userId,
     });
 
+    if (!doc) {
+      return res.status(400).json({
+        message: "Не удалось создать статью",
+      });
+    }
+
     const post = await doc.save();
+
+    if (!post) {
+      return res.status(400).json({
+        message: "Не удалось создать статью",
+      });
+    }
 
     return res.json({ post });
 
