@@ -6,8 +6,9 @@ import {
   registerValidation,
   loginValidation,
   postCreateValidation,
+  commentValidation,
 } from "./server/validations.js";
-import {checkAuth, handleValidationsErrors } from "./server/utils/index.js"; 
+import { checkAuth, handleValidationsErrors } from "./server/utils/index.js";
 import { UserController, PostController } from "./server/controllers/index.js";
 
 mongoose
@@ -38,6 +39,27 @@ app.use(express.json());
 app.use(cors());
 app.use("/uploads", express.static("uploads"));
 
+app.get("/auth/me", checkAuth, UserController.getMe);
+app.get("/tags", PostController.getLastTags);
+app.get("/posts", PostController.getAll);
+app.get("/posts/tags", PostController.getLastTags);
+app.get("/posts/:id", PostController.getOne);
+
+app.get("/posts/:id/comments", PostController.getAllByPostId);
+
+app.get()
+
+app.post(
+  "/posts",
+  checkAuth,
+  postCreateValidation,
+  handleValidationsErrors,
+  PostController.create,
+);
+app.post("/upload", checkAuth, upload.single("image"), (req, res) => {
+  res.json({ url: `/uploads/${req.file.originalname}` });
+});
+
 app.post(
   "/auth/login",
   loginValidation,
@@ -50,26 +72,17 @@ app.post(
   handleValidationsErrors,
   UserController.register,
 );
-app.get("/me", checkAuth, UserController.getMe);
 
-app.post("/upload", checkAuth, upload.single("image"), (req, res) => {
-  res.json({
-    url: `/uploads/${req.file.originalname}`,
-  });
-});
-app.get('/tags', PostController.getLastTags)
-app.get("/posts", PostController.getAll);
-app.get("/posts/tags", PostController.getLastTags);
-app.get("/posts/:id", PostController.getOne);
 app.post(
-  "/posts",
+  "/posts/comments",
   checkAuth,
-  postCreateValidation,
+  commentValidation,
   handleValidationsErrors,
-  PostController.create,
+  PostController.createComment,
 );
 
 app.delete("/posts/:id", checkAuth, PostController.remove);
+app.delete("/posts/:id/comments/:id", checkAuth, PostController.removeComment);
 
 app.patch(
   "/posts/:id",

@@ -1,12 +1,13 @@
 import PostModel from "../models/post.js";
 
-
 export const getLastTags = async (req, res) => {
   try {
     const posts = await PostModel.find().limit(5).exec();
 
-    const tags = posts.map(obj => obj.tags).flat().slice(0,5)
-
+    const tags = posts
+      .map((obj) => obj.tags)
+      .flat()
+      .slice(0, 5);
 
     res.json({ tags });
   } catch (err) {
@@ -15,7 +16,7 @@ export const getLastTags = async (req, res) => {
       message: "Не удалось получить тэги",
     });
   }
-}
+};
 export const getAll = async (req, res) => {
   try {
     const posts = await PostModel.find().populate("user").exec();
@@ -40,7 +41,7 @@ export const getOne = (req, res) => {
     },
     {
       returnDocument: "after",
-    }
+    },
   )
     .then((doc) => {
       if (!doc) {
@@ -72,7 +73,7 @@ export const remove = (req, res) => {
       }
 
       res.json({
-        message: 'Статья была удалена',
+        message: "Статья была удалена",
       });
     })
     .catch((err) => {
@@ -82,18 +83,10 @@ export const remove = (req, res) => {
       });
     });
 };
+
 export const create = async (req, res) => {
   try {
-    const postId = req.params.id;
-
-    if (!postId) {
-      return res.status(400).json({
-        message: "Не передан ID статьи",
-      });
-    }
-
     const doc = new PostModel({
-      _id: postId,
       title: req.body.title,
       text: req.body.text,
       imageUrl: req.body.imageUrl,
@@ -116,7 +109,6 @@ export const create = async (req, res) => {
     }
 
     return res.json({ post });
-
   } catch (err) {
     console.log(err);
     return res.status(500).json({
@@ -147,6 +139,72 @@ export const update = async (req, res) => {
     console.log(err);
     res.status(500).json({
       message: "Не удалось обновить статью",
+    });
+  }
+};
+
+export const createComment = async (req, res) => {
+  try {
+    const doc = new PostModel({
+      commentsText: req.body.text,
+      user: req.userId,
+    });
+
+    if (!doc) {
+      return res.status(400).json({
+        message: "Не удалось написать комментарий",
+      });
+    }
+
+    const comment = await doc.save();
+
+    if (!comment) {
+      return res.status(400).json({
+        message: "Не удалось написать комментарий",
+      });
+    }
+
+    return res.json({ comment });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      message: "Не удалось написать комментарий",
+    });
+  }
+};
+export const removeComment = (req, res) => {
+  const commentId = req.params.id;
+
+  PostModel.findOneAndDelete({
+    _id: commentId,
+  })
+    .then((doc) => {
+      if (!doc) {
+        return res.status(404).json({
+          message: "Комментарий не найден",
+        });
+      }
+
+      res.json({
+        message: "Комментарий был удален",
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({
+        message: "Не удалось удалить комментарий",
+      });
+    });
+};
+export const getAllByPostId= async (req, res) => {
+  try {
+    const comments = await PostModel.find({ postId: req.params.id }).populate("Comment").exec();
+
+    res.json({ comments });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: "Не удалось получить комментарии",
     });
   }
 };

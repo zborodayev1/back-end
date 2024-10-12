@@ -1,8 +1,8 @@
 import { body } from "express-validator";
 
 export const postCreateValidation = [
-  body("title","Введите заголовок статьи").isLength({ min: 3 }).isString(),
-  body("text","Введите текст статьи").isLength({ min: 3 }).isString(),
+  body("title", "Введите заголовок статьи").isLength({ min: 3 }).isString(),
+  body("text", "Введите текст статьи").isLength({ min: 3 }).isString(),
   body("tags", "Неверный формат тэгов").optional().isArray(),
   body("imageUrl", "Неверная ссылка на изображение").optional().isString(),
 ];
@@ -17,4 +17,8 @@ export const registerValidation = [
 export const loginValidation = [
   body("email", "Неверный формат почты").isEmail(),
   body("password", "Пароль должен быть больше 8 символов").isLength({ min: 8 }),
+];
+
+export const commentValidation = [
+  body("text", "Текст комментария").isLength({ min: 3 }),
 ];

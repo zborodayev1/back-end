@@ -9,7 +9,7 @@ const PostShema = new mongoose.Schema(
     text: {
       type: String,
       required: true,
-    },   
+    },
     tags: {
       type: Array,
       default: [],
@@ -24,6 +24,7 @@ const PostShema = new mongoose.Schema(
       required: true,
     },
     imageUrl: String,
+    
   },
   {
     timestamps: true,
