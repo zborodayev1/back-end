@@ -18,7 +18,3 @@ export const loginValidation = [
   body("email", "Неверный формат почты").isEmail(),
   body("password", "Пароль должен быть больше 8 символов").isLength({ min: 8 }),
 ];
-
-export const commentValidation = [
-  body("text", "Текст комментария").isLength({ min: 3 }),
-];

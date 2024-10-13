@@ -6,7 +6,6 @@ import {
   registerValidation,
   loginValidation,
   postCreateValidation,
-  commentValidation,
 } from "./server/validations.js";
 import { checkAuth, handleValidationsErrors } from "./server/utils/index.js";
 import { UserController, PostController } from "./server/controllers/index.js";
@@ -42,12 +41,8 @@ app.use("/uploads", express.static("uploads"));
 app.get("/auth/me", checkAuth, UserController.getMe);
 app.get("/tags", PostController.getLastTags);
 app.get("/posts", PostController.getAll);
-app.get("/posts/tags", PostController.getLastTags);
+// app.get("/posts/tags", PostController.getLastTags);
 app.get("/posts/:id", PostController.getOne);
-
-app.get("/posts/:id/comments", PostController.getAllByPostId);
-
-app.get()
 
 app.post(
   "/posts",
@@ -73,16 +68,8 @@ app.post(
   UserController.register,
 );
 
-app.post(
-  "/posts/comments",
-  checkAuth,
-  commentValidation,
-  handleValidationsErrors,
-  PostController.createComment,
-);
 
 app.delete("/posts/:id", checkAuth, PostController.remove);
-app.delete("/posts/:id/comments/:id", checkAuth, PostController.removeComment);
 
 app.patch(
   "/posts/:id",
