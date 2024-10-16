@@ -38,7 +38,7 @@ app.use(express.json());
 app.use(cors());
 app.use("/uploads", express.static("uploads"));
 
-app.get("/profile/:id",checkAuth, UserController.getProfile);
+// app.get("/profile/:id",checkAuth, UserController.getProfile);
 app.get("/auth/me", checkAuth, UserController.getMe);
 app.get("/tags", PostController.getLastTags);
 app.get("/posts", PostController.getAll);
