@@ -13,7 +13,7 @@ import { UserController, PostController } from "./server/controllers/index.js";
 mongoose
   .connect(
     "mongodb+srv://root:pass@cluster0.r8mza.mongodb.net/blog?retryWrites=true&w=majority&appName=Cluster0",
-  )
+  ) 
   .then(() => {
     console.log("DB connect!");
   })
@@ -38,6 +38,7 @@ app.use(express.json());
 app.use(cors());
 app.use("/uploads", express.static("uploads"));
 
+app.get("/profile/:id",checkAuth, UserController.getProfile);
 app.get("/auth/me", checkAuth, UserController.getMe);
 app.get("/tags", PostController.getLastTags);
 app.get("/posts", PostController.getAll);
