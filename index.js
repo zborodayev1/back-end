@@ -52,7 +52,10 @@ app.post(
   handleValidationsErrors,
   PostController.create,
 );
-app.post("/upload", checkAuth, upload.single("image"), (req, res) => {
+app.post("/upload", upload.single("image"), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ message: "Не был передан файл" });
+  }
   res.json({ url: `/uploads/${req.file.originalname}` });
 });
 
@@ -82,7 +85,7 @@ app.patch(
 
 app.listen(4444, (err) => {
   if (err) {
-    return console.log(err);
+    console.log('Ошибка сервера')
   }
   console.log("Server OK");
 });

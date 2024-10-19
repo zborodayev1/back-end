@@ -59,6 +59,29 @@ export const getOne = (req, res) => {
       });
     });
 };
+// export const getOne = async (req, res) => {
+//   try {
+//     const postId = req.params.id;
+//     if (!postId) {
+//       return res.status(400).json({ message: "Неверный идентификатор статьи" });
+//     }
+
+//     const post = await PostModel.findOneAndUpdate(
+//       { _id: postId },
+//       { $inc: { viewsCount: 1 } },
+//       { new: true }
+//     ).populate("user");
+
+//     if (!post) {
+//       return res.status(404).json({ message: "Статья не найдена" });
+//     }
+
+//     res.json(post);
+//   } catch (err) {
+//     console.log(err);
+//     return res.status(500).json({ message: "Не удалось вернуть статью" });
+//   }
+// };
 export const remove = (req, res) => {
   const postId = req.params.id;
 
